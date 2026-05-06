@@ -22,16 +22,32 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
+    const responseMessage =
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal server error';
 
+    let messageStr = 'Error';
+    let errorsObj: unknown = null;
+
+    if (typeof responseMessage === 'string') {
+      messageStr = responseMessage;
+    } else if (
+      typeof responseMessage === 'object' &&
+      responseMessage !== null
+    ) {
+      const msgObj = responseMessage as Record<string, unknown>;
+      if (typeof msgObj.message === 'string') {
+        messageStr = msgObj.message;
+      }
+      errorsObj = msgObj.error || responseMessage;
+    }
+
     const errorResponse = {
       success: false,
-      message: typeof message === 'string' ? message : (message as any).message || 'Error',
+      message: messageStr,
       data: null,
-      errors: typeof message === 'object' ? (message as any).error || message : null,
+      errors: errorsObj,
       timestamp: new Date().toISOString(),
       path: request.url,
     };

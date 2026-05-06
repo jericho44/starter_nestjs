@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
 
+export type UserWithRole = Prisma.UserGetPayload<{
+  include: {
+    role: { include: { permissions: { include: { permission: true } } } };
+  };
+}>;
+
 @Injectable()
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
@@ -20,10 +26,14 @@ export class UserRepository {
     return this.prisma.user.findMany(params);
   }
 
-  async findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
-    return this.prisma.user.findUnique({ 
+  async findOne(
+    where: Prisma.UserWhereUniqueInput,
+  ): Promise<UserWithRole | null> {
+    return this.prisma.user.findUnique({
       where,
-      include: { role: { include: { permissions: { include: { permission: true } } } } }
+      include: {
+        role: { include: { permissions: { include: { permission: true } } } },
+      },
     });
   }
 

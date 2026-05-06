@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
@@ -30,8 +34,12 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Invalid credentials');
 
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
@@ -52,9 +60,13 @@ export class AuthService {
 
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.usersService.findOne(userId);
-    if (!user || !user.refreshToken) throw new UnauthorizedException('Access Denied');
+    if (!user || !user.refreshToken)
+      throw new UnauthorizedException('Access Denied');
 
-    const refreshTokenMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+    const refreshTokenMatches = await bcrypt.compare(
+      refreshToken,
+      user.refreshToken,
+    );
     if (!refreshTokenMatches) throw new UnauthorizedException('Access Denied');
 
     const tokens = await this.getTokens(user.id, user.email);
@@ -64,7 +76,9 @@ export class AuthService {
   }
 
   async updateRefreshToken(userId: string, refreshToken: string | null) {
-    const hashedRefreshToken = refreshToken ? await bcrypt.hash(refreshToken, 10) : null;
+    const hashedRefreshToken = refreshToken
+      ? await bcrypt.hash(refreshToken, 10)
+      : null;
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
   }
 
@@ -74,14 +88,14 @@ export class AuthService {
         { sub: userId, email },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET')!,
-          expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION')! as any,
+          expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION')!,
         },
       ),
       this.jwtService.signAsync(
         { sub: userId, email },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET')!,
-          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION')! as any,
+          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION')!,
         },
       ),
     ]);

@@ -23,7 +23,10 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     }),
     LoggerModule.forRoot({
       pinoHttp: {
-        transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? { target: 'pino-pretty' }
+            : undefined,
       },
     }),
     ThrottlerModule.forRootAsync({

@@ -20,15 +20,24 @@ export class MailService {
     });
   }
 
-  async sendMail(to: string, subject: string, template: string, context: any) {
-    const templatePath = path.join(process.cwd(), 'templates', `${template}.ejs`);
+  async sendMail(
+    to: string,
+    subject: string,
+    template: string,
+    context: Record<string, any>,
+  ) {
+    const templatePath = path.join(
+      process.cwd(),
+      'templates',
+      `${template}.ejs`,
+    );
     const html = await ejs.renderFile(templatePath, context);
 
     await this.transporter.sendMail({
       from: this.configService.get('MAIL_FROM'),
       to,
       subject,
-      html: html as string,
+      html: html,
     });
   }
 }

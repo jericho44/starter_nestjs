@@ -13,7 +13,9 @@ export class FilesService {
       const stream = createWriteStream(uploadPath);
       stream.write(file.buffer);
       stream.end();
-      stream.on('finish', () => resolve({ fileName, path: `/uploads/${fileName}` }));
+      stream.on('finish', () =>
+        resolve({ fileName, path: `/uploads/${fileName}` }),
+      );
       stream.on('error', (err) => reject(err));
     });
   }
