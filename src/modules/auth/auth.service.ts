@@ -88,14 +88,20 @@ export class AuthService {
         { sub: userId, email },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET')!,
-          expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION')!,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          expiresIn: this.configService.get<string>(
+            'JWT_ACCESS_EXPIRATION',
+          )! as any,
         },
       ),
       this.jwtService.signAsync(
         { sub: userId, email },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET')!,
-          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION')!,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          expiresIn: this.configService.get<string>(
+            'JWT_REFRESH_EXPIRATION',
+          )! as any,
         },
       ),
     ]);
