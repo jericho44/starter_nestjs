@@ -19,9 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
-    "prisma:generate": "prisma generate --schema=prisma/schema.prisma && prisma generate --schema=prisma/analytics.prisma",
-    "prisma:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
-    "prisma:migrate:analytics": "prisma migrate dev --schema=prisma/analytics.prisma",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts"
   },
   "lint-staged": {

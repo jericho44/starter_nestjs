@@ -85,7 +85,7 @@ Create a new file in `prisma/`, e.g., `prisma/analytics.prisma`.
 ```prisma
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/@prisma/client/analytics"
+  output   = "../node_modules/@prisma/analytics-client"
 }
 
 datasource db {
